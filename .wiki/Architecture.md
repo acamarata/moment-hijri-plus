@@ -4,7 +4,7 @@
 
 The package has one job: adapt the hijri-core API to Moment.js idioms. No calendar logic belongs here. All date arithmetic, table lookups, and validation live in hijri-core, which is tested and maintained independently.
 
-This constraint keeps moment-hijri-plus small, maintainable, and calendar-agnostic — it benefits automatically from any calendar or correctness improvements made in hijri-core.
+This constraint keeps moment-hijri-plus small, maintainable, and calendar-agnostic. It benefits automatically from any calendar or correctness improvements made in hijri-core.
 
 ## Plugin pattern
 
@@ -15,25 +15,25 @@ import installHijri from 'moment-hijri-plus';
 installHijri(moment);
 ```
 
-This approach avoids accidental double-registration, keeps the plugin stateless, and works with any moment instance — including custom ones created by `moment.utc()` or locale-scoped instances.
+This approach avoids accidental double-registration, keeps the plugin stateless, and works with any moment instance, including custom ones created by `moment.utc()` or locale-scoped instances.
 
 ## Module augmentation
 
-The TypeScript types are added to `moment.Moment` and `moment.MomentStatic` via declaration merging. This is the standard TypeScript way to extend third-party interfaces:
+The TypeScript types are added to `moment.Moment` and `moment.MomentStatic` via declaration merging:
 
 ```typescript
 declare module 'moment' {
+  interface MomentStatic {
+    fromHijri(hy: number, hm: number, hd: number, options?: ConversionOptions): Moment;
+  }
   interface Moment {
     toHijri(options?: ConversionOptions): HijriDate | null;
     // ...
   }
-  interface MomentStatic {
-    fromHijri(hy: number, hm: number, hd: number, options?: ConversionOptions): Moment;
-  }
 }
 ```
 
-The augmentation is emitted in the declaration files produced by tsup, so consumers get full type inference without any extra imports.
+The augmentation is emitted in the declaration files produced by tsup, so consumers get full type inference without extra imports.
 
 ## Format token system
 
@@ -47,7 +47,7 @@ The regex is ordered longest-match-first to prevent prefix collisions:
 
 `iYYYY` must appear before `iYY` for obvious reasons; `iMMMM` before `iMMM` and `iMM`; `iDD` before `iD`; `iEEEE` before `iEEE`. The global flag allows the regex to find all non-overlapping tokens in one pass.
 
-Moment's own bracket escaping (`[literal text]`) is preserved because it only runs during the `moment.format()` call on the residual string — any `[...]` sequences in the user's format string that don't contain Hijri tokens pass through untouched.
+Moment's own bracket escaping (`[literal text]`) is preserved because it only runs during the `moment.format()` call on the residual string. Any `[...]` sequences in the user's format string that don't contain Hijri tokens pass through untouched.
 
 ## Delegation to hijri-core
 
@@ -60,7 +60,7 @@ fromHijri()  →  hijri-core.toGregorian(hy, hm, hd, options)
 
 hijri-core maintains a registry of calendar engines. The default engine is `uaq` (Umm al-Qura). Callers can switch to `fcna` (FCNA/ISNA) or register custom engines via `hijri-core`'s `registerCalendar()`.
 
-Because moment-hijri-plus uses hijri-core as a peer dependency, the registry is shared — a calendar registered in application code via `hijri-core`'s `registerCalendar()` is immediately available to this plugin.
+Because moment-hijri-plus uses hijri-core as a peer dependency, the registry is shared. A calendar registered in application code via `hijri-core`'s `registerCalendar()` is immediately available to this plugin.
 
 ## Build output
 
@@ -79,7 +79,7 @@ Both `moment` and `hijri-core` are marked external, so they are not bundled. The
 
 | Calendar | ID | Range | Authority |
 | --- | --- | --- | --- |
-| Umm al-Qura | `uaq` | AH 1356-1500 (approx CE 1937-2077) | Official Saudi calendar |
+| Umm al-Qura | `uaq` | AH 1318-1500 (approx CE 1900-2076) | Official Saudi calendar |
 | FCNA/ISNA | `fcna` | Calculated, no hard range | Fiqh Council of North America |
 
 The UAQ calendar is tabular: dates are looked up in a precomputed table published by the Umm al-Qura University. Dates outside the table return `null`. The FCNA calendar uses an astronomical calculation rule and has no strict boundary.

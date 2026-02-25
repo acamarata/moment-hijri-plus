@@ -11,8 +11,8 @@ A Moment.js plugin for Hijri calendar conversion and formatting. All calendar ar
 
 ## Pages
 
-- [API Reference](API-Reference) — complete method signatures and examples
-- [Architecture](Architecture) — design rationale, token system, calendar delegation
+- [API Reference](API-Reference): complete method signatures and examples
+- [Architecture](Architecture): design rationale, token system, calendar delegation
 
 ## Quick start
 
@@ -38,9 +38,9 @@ moment.fromHijri(1446, 1, 1).format('YYYY-MM-DD');
 
 ## Related packages
 
-- [hijri-core](https://github.com/acamarata/hijri-core) — the calendar engine
-- [luxon-hijri](https://github.com/acamarata/luxon-hijri) — same support for Luxon
-- [pray-calc](https://github.com/acamarata/pray-calc) — Islamic prayer time calculation
+- [hijri-core](https://github.com/acamarata/hijri-core): the calendar engine
+- [luxon-hijri](https://github.com/acamarata/luxon-hijri): same support for Luxon
+- [pray-calc](https://github.com/acamarata/pray-calc): Islamic prayer time calculation
 
 ---
 

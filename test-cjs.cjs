@@ -17,7 +17,7 @@ function test(name, fn) {
     passed++;
   } catch (err) {
     console.error(`[${name}]... FAIL: ${err.message}`);
-    process.exitCode = 1;
+    process.exit(1);
   }
 }
 

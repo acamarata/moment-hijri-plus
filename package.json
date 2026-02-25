@@ -48,7 +48,7 @@
   "peerDependencies": { "moment": "^2.0.0", "hijri-core": "^1.0.0" },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "hijri-core": "file:../hijri-core",
+    "hijri-core": "^1.0.0",
     "moment": "^2.30.0",
     "tsup": "^8.0.0",
     "typescript": "^5.5.0"

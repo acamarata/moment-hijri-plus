@@ -70,7 +70,7 @@ interface ConversionOptions {
 
 | ID | Name | Description |
 | --- | --- | --- |
-| `uaq` | Umm al-Qura | Official calendar of Saudi Arabia. Tabular, covers AH 1356-1500. Default. |
+| `uaq` | Umm al-Qura | Official calendar of Saudi Arabia. Tabular, covers AH 1318-1500 (1900-2076 CE). Default. |
 | `fcna` | FCNA/ISNA | Fiqh Council of North America calculated calendar. |
 
 Pass the calendar ID via `options`:
@@ -129,9 +129,9 @@ Full API reference, architecture notes, and calendar algorithm details are in th
 
 ## Related
 
-- [hijri-core](https://github.com/acamarata/hijri-core) — zero-dependency Hijri calendar engine used by this plugin
-- [luxon-hijri](https://github.com/acamarata/luxon-hijri) — same Hijri support for Luxon
-- [pray-calc](https://github.com/acamarata/pray-calc) — Islamic prayer time calculation
+- [hijri-core](https://github.com/acamarata/hijri-core): zero-dependency Hijri calendar engine used by this plugin
+- [luxon-hijri](https://github.com/acamarata/luxon-hijri): same Hijri support for Luxon
+- [pray-calc](https://github.com/acamarata/pray-calc): Islamic prayer time calculation
 
 ## License
 

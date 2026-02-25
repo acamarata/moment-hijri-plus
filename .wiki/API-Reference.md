@@ -30,7 +30,7 @@ Converts the moment to a Hijri date.
 
 **Signature:** `(options?: ConversionOptions) => HijriDate | null`
 
-Returns `null` if the date falls outside the supported calendar range (UAQ covers AH 1356-1500, approximately CE 1937-2077).
+Returns `null` if the date falls outside the supported calendar range (UAQ covers AH 1318-1500, approximately CE 1900-2076).
 
 ```javascript
 const h = moment(new Date(2023, 2, 23)).toHijri();
@@ -162,8 +162,8 @@ interface ConversionOptions {
 
 | Calendar ID | Description |
 | --- | --- |
-| `uaq` | Umm al-Qura — official Saudi calendar, tabular, covers AH 1356-1500 |
-| `fcna` | FCNA/ISNA — Fiqh Council of North America calculated calendar |
+| `uaq` | Umm al-Qura: official Saudi calendar, tabular, covers AH 1318-1500 |
+| `fcna` | FCNA/ISNA: Fiqh Council of North America calculated calendar |
 
 Custom calendars can be registered with hijri-core's `registerCalendar()`.
 

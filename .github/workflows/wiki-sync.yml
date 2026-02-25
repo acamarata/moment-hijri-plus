@@ -6,6 +6,9 @@ on:
     paths:
       - '.wiki/**'
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     name: Sync .wiki/ to GitHub Wiki

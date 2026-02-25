@@ -1,4 +1,5 @@
 import moment from 'moment';
+import type { Moment as MomentInstance } from 'moment';
 import {
   toHijri,
   toGregorian,
@@ -11,6 +12,15 @@ import {
 import type { HijriDate, ConversionOptions } from './types';
 
 declare module 'moment' {
+  interface MomentStatic {
+    /**
+     * Construct a moment from a Hijri date.
+     * Throws if the date is invalid or outside the supported range.
+     * Call installHijri(moment) before use.
+     */
+    fromHijri(hy: number, hm: number, hd: number, options?: ConversionOptions): MomentInstance;
+  }
+
   interface Moment {
     /**
      * Convert this moment to a Hijri date.
@@ -119,7 +129,7 @@ function install(momentInstance: typeof moment): void {
 
   // Attach fromHijri as a property on the constructor. We use a type assertion
   // because MomentStatic augmentation produces a DTS visibility error with some
-  // TypeScript configurations — attaching at runtime is equivalent and safe.
+  // TypeScript configurations; attaching at runtime is equivalent and safe.
   (momentInstance as unknown as Record<string, unknown>).fromHijri = function (
     hy: number,
     hm: number,
@@ -142,4 +152,5 @@ function install(momentInstance: typeof moment): void {
 }
 
 export default install;
-export type { HijriDate, ConversionOptions } from 'hijri-core';
+export type { HijriDate, ConversionOptions, CalendarEngine } from 'hijri-core';
+export { registerCalendar, getCalendar, listCalendars } from 'hijri-core';
