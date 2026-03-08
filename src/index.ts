@@ -1,14 +1,6 @@
 import moment from 'moment';
 import type { Moment as MomentInstance } from 'moment';
-import {
-  toHijri,
-  toGregorian,
-  hmLong,
-  hmMedium,
-  hwLong,
-  hwShort,
-  hwNumeric,
-} from 'hijri-core';
+import { toHijri, toGregorian, hmLong, hmMedium, hwLong, hwShort, hwNumeric } from 'hijri-core';
 import type { HijriDate, ConversionOptions } from './types';
 
 declare module 'moment' {
@@ -54,8 +46,7 @@ declare module 'moment' {
 
 // Regex matching all Hijri format tokens. Ordered longest-first so iYYYY is
 // matched before iYY, iMMMM before iMMM, iDD before iD, iEEEE before iEEE.
-const HIJRI_TOKEN_RE =
-  /iYYYY|iYY|iMMMM|iMMM|iMM|iM|iDD|iD|iEEEE|iEEE|iE|ioooo|iooo/g;
+const HIJRI_TOKEN_RE = /iYYYY|iYY|iMMMM|iMMM|iMM|iM|iDD|iD|iEEEE|iEEE|iE|ioooo|iooo/g;
 
 /**
  * Escape a literal string so moment.format() treats it as literal text.
@@ -94,37 +85,47 @@ function install(momentInstance: typeof moment): void {
     return this.toHijri(opts) !== null;
   };
 
-  momentInstance.fn.formatHijri = function (
-    formatStr: string,
-    opts?: ConversionOptions,
-  ): string {
+  momentInstance.fn.formatHijri = function (formatStr: string, opts?: ConversionOptions): string {
     const hijri = this.toHijri(opts);
     if (!hijri) return '';
-    const m = this;
+    const dow = this.day();
     // Replace Hijri tokens with escaped literals, then pass the residual string
     // to moment.format() so all standard tokens (YYYY, MMM, etc.) resolve correctly.
     // Escaping is required because values like "Ramadan" would otherwise be
     // interpreted by moment as format tokens (R, a, m, etc.).
     const residual = formatStr.replace(HIJRI_TOKEN_RE, (token: string): string => {
       switch (token) {
-        case 'iYYYY': return escapeLiteral(String(hijri.hy).padStart(4, '0'));
-        case 'iYY':   return escapeLiteral(String(hijri.hy % 100).padStart(2, '0'));
-        case 'iMMMM': return escapeLiteral(hmLong[hijri.hm - 1]);
-        case 'iMMM':  return escapeLiteral(hmMedium[hijri.hm - 1]);
-        case 'iMM':   return escapeLiteral(String(hijri.hm).padStart(2, '0'));
-        case 'iM':    return escapeLiteral(String(hijri.hm));
-        case 'iDD':   return escapeLiteral(String(hijri.hd).padStart(2, '0'));
-        case 'iD':    return escapeLiteral(String(hijri.hd));
-        case 'iEEEE': return escapeLiteral(hwLong[m.day()]);
-        case 'iEEE':  return escapeLiteral(hwShort[m.day()]);
-        case 'iE':    return escapeLiteral(String(hwNumeric[m.day()]));
+        case 'iYYYY':
+          return escapeLiteral(String(hijri.hy).padStart(4, '0'));
+        case 'iYY':
+          return escapeLiteral(String(hijri.hy % 100).padStart(2, '0'));
+        case 'iMMMM':
+          return escapeLiteral(hmLong[hijri.hm - 1]);
+        case 'iMMM':
+          return escapeLiteral(hmMedium[hijri.hm - 1]);
+        case 'iMM':
+          return escapeLiteral(String(hijri.hm).padStart(2, '0'));
+        case 'iM':
+          return escapeLiteral(String(hijri.hm));
+        case 'iDD':
+          return escapeLiteral(String(hijri.hd).padStart(2, '0'));
+        case 'iD':
+          return escapeLiteral(String(hijri.hd));
+        case 'iEEEE':
+          return escapeLiteral(hwLong[dow]);
+        case 'iEEE':
+          return escapeLiteral(hwShort[dow]);
+        case 'iE':
+          return escapeLiteral(String(hwNumeric[dow]));
         // Era tokens: both iooo and ioooo map to the common abbreviation.
         case 'iooo':
-        case 'ioooo': return escapeLiteral('AH');
-        default:      return token;
+        case 'ioooo':
+          return escapeLiteral('AH');
+        default:
+          return token;
       }
     });
-    return m.format(residual);
+    return this.format(residual);
   };
 
   // Attach fromHijri as a property on the constructor. We use a type assertion

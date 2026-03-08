@@ -7,9 +7,9 @@ export default defineConfig({
   clean: true,
   outDir: 'dist',
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   target: 'es2020',
-  platform: 'node',
+  platform: 'neutral',
   external: ['moment', 'hijri-core'],
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
