@@ -133,6 +133,17 @@ Full API reference, architecture notes, and calendar algorithm details are in th
 - [luxon-hijri](https://github.com/acamarata/luxon-hijri): same Hijri support for Luxon
 - [pray-calc](https://github.com/acamarata/pray-calc): Islamic prayer time calculation
 
+## Compatibility
+
+- Node.js 20, 22, 24
+- Moment.js 2.x (peer dependency)
+- ESM and CJS builds included
+- TypeScript definitions bundled
+
+## Acknowledgments
+
+Calendar data and algorithms provided by [hijri-core](https://github.com/acamarata/hijri-core). The Umm al-Qura table is derived from data published by the King Abdulaziz City for Science and Technology (KACST). FCNA new moon calculations follow Jean Meeus, "Astronomical Algorithms," 2nd ed., Chapter 49.
+
 ## License
 
 MIT. Copyright (c) 2026 Aric Camarata.
