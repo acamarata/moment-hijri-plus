@@ -41,11 +41,11 @@ const h = moment(new Date(2023, 2, 23)).toHijri({ calendar: 'fcna' });
 
 **HijriDate fields:**
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `hy` | `number` | Hijri year |
-| `hm` | `number` | Hijri month (1 = Muharram, 12 = Dhul Hijjah) |
-| `hd` | `number` | Hijri day (1-30) |
+| Field | Type     | Description                                  |
+| ----- | -------- | -------------------------------------------- |
+| `hy`  | `number` | Hijri year                                   |
+| `hm`  | `number` | Hijri month (1 = Muharram, 12 = Dhul Hijjah) |
+| `hd`  | `number` | Hijri day (1-30)                             |
 
 ---
 
@@ -89,7 +89,7 @@ Returns `true` if the date falls within the supported range of the chosen calend
 
 ```javascript
 moment(new Date(2023, 2, 23)).isValidHijri(); // => true
-moment(new Date(1900, 0, 1)).isValidHijri();  // => false (before UAQ range)
+moment(new Date(1900, 0, 1)).isValidHijri(); // => false (before UAQ range)
 ```
 
 ---
@@ -116,21 +116,21 @@ moment(new Date(2023, 2, 23)).formatHijri('iD iMMMM iYYYY [CE:] MMMM D, YYYY');
 
 **Format tokens:**
 
-| Token | Example output | Description |
-| --- | --- | --- |
-| `iYYYY` | `1444` | Hijri year, 4+ digits, zero-padded to 4 |
-| `iYY` | `44` | Hijri year, last 2 digits, zero-padded |
-| `iMMMM` | `Ramadan` | Month long name |
-| `iMMM` | `Ramadan` | Month medium name |
-| `iMM` | `09` | Month number, zero-padded |
-| `iM` | `9` | Month number |
-| `iDD` | `01` | Day, zero-padded |
-| `iD` | `1` | Day |
-| `iEEEE` | `Yawm al-Khamis` | Weekday long name |
-| `iEEE` | `Kham` | Weekday short name |
-| `iE` | `5` | Weekday numeric (1=Sunday, 7=Saturday) |
-| `ioooo` | `AH` | Era, long |
-| `iooo` | `AH` | Era, short |
+| Token   | Example output   | Description                             |
+| ------- | ---------------- | --------------------------------------- |
+| `iYYYY` | `1444`           | Hijri year, 4+ digits, zero-padded to 4 |
+| `iYY`   | `44`             | Hijri year, last 2 digits, zero-padded  |
+| `iMMMM` | `Ramadan`        | Month long name                         |
+| `iMMM`  | `Ramadan`        | Month medium name                       |
+| `iMM`   | `09`             | Month number, zero-padded               |
+| `iM`    | `9`              | Month number                            |
+| `iDD`   | `01`             | Day, zero-padded                        |
+| `iD`    | `1`              | Day                                     |
+| `iEEEE` | `Yawm al-Khamis` | Weekday long name                       |
+| `iEEE`  | `Kham`           | Weekday short name                      |
+| `iE`    | `5`              | Weekday numeric (1=Sunday, 7=Saturday)  |
+| `ioooo` | `AH`             | Era, long                               |
+| `iooo`  | `AH`             | Era, short                              |
 
 ---
 
@@ -160,10 +160,10 @@ interface ConversionOptions {
 }
 ```
 
-| Calendar ID | Description |
-| --- | --- |
-| `uaq` | Umm al-Qura: official Saudi calendar, tabular, covers AH 1318-1500 |
-| `fcna` | FCNA/ISNA: Fiqh Council of North America calculated calendar |
+| Calendar ID | Description                                                        |
+| ----------- | ------------------------------------------------------------------ |
+| `uaq`       | Umm al-Qura: official Saudi calendar, tabular, covers AH 1318-1500 |
+| `fcna`      | FCNA/ISNA: Fiqh Council of North America calculated calendar       |
 
 Custom calendars can be registered with hijri-core's `registerCalendar()`.
 

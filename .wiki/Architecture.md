@@ -42,7 +42,7 @@ The augmentation is emitted in the declaration files produced by tsup, so consum
 The regex is ordered longest-match-first to prevent prefix collisions:
 
 ```javascript
-/iYYYY|iYY|iMMMM|iMMM|iMM|iM|iDD|iD|iEEEE|iEEE|iE|ioooo|iooo/g
+/iYYYY|iYY|iMMMM|iMMM|iMM|iM|iDD|iD|iEEEE|iEEE|iE|ioooo|iooo/g;
 ```
 
 `iYYYY` must appear before `iYY` for obvious reasons; `iMMMM` before `iMMM` and `iMM`; `iDD` before `iD`; `iEEEE` before `iEEE`. The global flag allows the regex to find all non-overlapping tokens in one pass.
@@ -66,21 +66,21 @@ Because moment-hijri-plus uses hijri-core as a peer dependency, the registry is 
 
 tsup produces four files:
 
-| File | Format | Purpose |
-| --- | --- | --- |
-| `dist/index.cjs` | CommonJS | `require()` in Node.js and bundlers in CJS mode |
-| `dist/index.mjs` | ESM | `import` in Node.js, Vite, Rollup, esbuild |
-| `dist/index.d.ts` | CJS declaration | Types for CJS consumers (`require`) |
-| `dist/index.d.mts` | ESM declaration | Types for ESM consumers (`import`) |
+| File               | Format          | Purpose                                         |
+| ------------------ | --------------- | ----------------------------------------------- |
+| `dist/index.cjs`   | CommonJS        | `require()` in Node.js and bundlers in CJS mode |
+| `dist/index.mjs`   | ESM             | `import` in Node.js, Vite, Rollup, esbuild      |
+| `dist/index.d.ts`  | CJS declaration | Types for CJS consumers (`require`)             |
+| `dist/index.d.mts` | ESM declaration | Types for ESM consumers (`import`)              |
 
 Both `moment` and `hijri-core` are marked external, so they are not bundled. They resolve from the consumer's `node_modules` at runtime.
 
 ## Calendar coverage
 
-| Calendar | ID | Range | Authority |
-| --- | --- | --- | --- |
-| Umm al-Qura | `uaq` | AH 1318-1500 (approx CE 1900-2076) | Official Saudi calendar |
-| FCNA/ISNA | `fcna` | Calculated, no hard range | Fiqh Council of North America |
+| Calendar    | ID     | Range                              | Authority                     |
+| ----------- | ------ | ---------------------------------- | ----------------------------- |
+| Umm al-Qura | `uaq`  | AH 1318-1500 (approx CE 1900-2076) | Official Saudi calendar       |
+| FCNA/ISNA   | `fcna` | Calculated, no hard range          | Fiqh Council of North America |
 
 The UAQ calendar is tabular: dates are looked up in a precomputed table published by the Umm al-Qura University. Dates outside the table return `null`. The FCNA calendar uses an astronomical calculation rule and has no strict boundary.
 
