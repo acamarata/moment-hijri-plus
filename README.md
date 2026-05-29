@@ -123,6 +123,10 @@ installHijri(moment);
 const hijri: HijriDate | null = moment().toHijri();
 ```
 
+## Note on Moment.js
+
+Moment.js is in maintenance mode. The authors recommend Luxon, Day.js, or date-fns for new projects. This package targets existing codebases already using Moment.js. If you are starting a new project, [dayjs-hijri-plus](https://github.com/acamarata/dayjs-hijri-plus) is a compatible alternative that works with Day.js.
+
 ## Architecture
 
 A thin plugin wrapper over [hijri-core](https://github.com/acamarata/hijri-core). The plugin augments the Moment.js prototype with Hijri methods, each delegating to the registered calendar engine. Zero global state.
