@@ -100,9 +100,12 @@ function install(momentInstance: typeof moment): void {
         case 'iYY':
           return escapeLiteral(String(hijri.hy % 100).padStart(2, '0'));
         case 'iMMMM':
-          return escapeLiteral(hmLong[hijri.hm - 1]);
+          // Non-null: hijri.hm is 1-12; hm-1 is always 0-11, within hmLong bounds.
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return escapeLiteral(hmLong[hijri.hm - 1]!);
         case 'iMMM':
-          return escapeLiteral(hmMedium[hijri.hm - 1]);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return escapeLiteral(hmMedium[hijri.hm - 1]!);
         case 'iMM':
           return escapeLiteral(String(hijri.hm).padStart(2, '0'));
         case 'iM':
@@ -112,11 +115,15 @@ function install(momentInstance: typeof moment): void {
         case 'iD':
           return escapeLiteral(String(hijri.hd));
         case 'iEEEE':
-          return escapeLiteral(hwLong[dow]);
+          // Non-null: dow is always 0-6 (day of week), within hwLong bounds.
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return escapeLiteral(hwLong[dow]!);
         case 'iEEE':
-          return escapeLiteral(hwShort[dow]);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return escapeLiteral(hwShort[dow]!);
         case 'iE':
-          return escapeLiteral(String(hwNumeric[dow]));
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return escapeLiteral(String(hwNumeric[dow]!));
         // Era tokens: both iooo and ioooo map to the common abbreviation.
         case 'iooo':
         case 'ioooo':
@@ -128,10 +135,10 @@ function install(momentInstance: typeof moment): void {
     return this.format(residual);
   };
 
-  // Attach fromHijri as a property on the constructor. We use a type assertion
-  // because MomentStatic augmentation produces a DTS visibility error with some
+  // Attach fromHijri as a property on the constructor. We use bracket notation and a type
+  // assertion because MomentStatic augmentation produces a DTS visibility error with some
   // TypeScript configurations; attaching at runtime is equivalent and safe.
-  (momentInstance as unknown as Record<string, unknown>).fromHijri = function (
+  (momentInstance as unknown as Record<string, unknown>)['fromHijri'] = function (
     hy: number,
     hm: number,
     hd: number,
