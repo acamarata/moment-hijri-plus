@@ -4,7 +4,9 @@
 [![CI](https://github.com/acamarata/moment-hijri-plus/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/moment-hijri-plus/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Moment.js plugin for Hijri calendar conversion and formatting. Delegates all calendar logic to [hijri-core](https://github.com/acamarata/hijri-core), a zero-dependency Hijri engine with pluggable calendar support.
+Moment.js plugin for Hijri calendar conversion and formatting. Delegates all calendar
+logic to [hijri-core](https://github.com/acamarata/hijri-core), a zero-dependency Hijri
+engine with pluggable calendar support (Umm al-Qura and FCNA/ISNA).
 
 ## Installation
 
@@ -12,147 +14,54 @@ Moment.js plugin for Hijri calendar conversion and formatting. Delegates all cal
 pnpm add moment moment-hijri-plus hijri-core
 ```
 
-Both `moment` and `hijri-core` are peer dependencies and must be installed alongside this package.
+Both `moment` and `hijri-core` are peer dependencies.
 
 ## Quick Start
 
-```javascript
+```typescript
 import moment from 'moment';
 import installHijri from 'moment-hijri-plus';
 
-// Install the plugin once at startup.
 installHijri(moment);
 
-// Convert a Gregorian date to Hijri.
 const m = moment(new Date(2023, 2, 23)); // 23 March 2023
-const hijri = m.toHijri();
-// => { hy: 1444, hm: 9, hd: 1 }  (1 Ramadan 1444 AH)
+m.toHijri();            // { hy: 1444, hm: 9, hd: 1 }  (1 Ramadan 1444 AH)
+m.formatHijri('iD iMMMM iYYYY AH'); // '1 Ramadan 1444 AH'
 
-// Format using Hijri tokens.
-m.formatHijri('iD iMMMM iYYYY AH');
-// => '1 Ramadan 1444 AH'
-
-// Construct a moment from a Hijri date.
-const start = moment.fromHijri(1446, 1, 1);
-// => moment representing 7 July 2024 (1 Muharram 1446 AH)
+moment.fromHijri(1446, 1, 1); // moment for 7 July 2024
 ```
 
-## API
+## API Summary
 
-### Instance methods
+Call `installHijri(moment)` once at startup to add these methods.
 
-All methods are added to `moment.Moment` by calling `installHijri(moment)` once.
-
-| Method | Signature | Description |
+| Method | Returns | Description |
 | --- | --- | --- |
-| `toHijri` | `(options?) => HijriDate \| null` | Convert to Hijri. Returns `null` if the date is outside the calendar range. |
-| `hijriYear` | `(options?) => number \| null` | Hijri year, or `null` if out of range. |
-| `hijriMonth` | `(options?) => number \| null` | Hijri month (1-12), or `null` if out of range. |
-| `hijriDay` | `(options?) => number \| null` | Hijri day, or `null` if out of range. |
-| `isValidHijri` | `(options?) => boolean` | `true` if the date falls within the supported Hijri range. |
-| `formatHijri` | `(formatStr, options?) => string` | Format using Hijri tokens. Returns `''` if out of range. Non-Hijri tokens pass through to `moment.format()`. |
+| `toHijri(options?)` | `HijriDate \| null` | Convert to Hijri date object |
+| `hijriYear(options?)` | `number \| null` | Hijri year |
+| `hijriMonth(options?)` | `number \| null` | Hijri month (1-12) |
+| `hijriDay(options?)` | `number \| null` | Hijri day |
+| `isValidHijri(options?)` | `boolean` | True if date is within calendar range |
+| `formatHijri(fmt, options?)` | `string` | Format with Hijri tokens; non-Hijri tokens pass through |
+| `moment.fromHijri(hy, hm, hd, options?)` | `Moment` | Construct moment from Hijri date |
 
-### Static factory
+Pass `{ calendar: 'fcna' }` to switch from the default Umm al-Qura calendar to FCNA/ISNA.
 
-| Method | Signature | Description |
-| --- | --- | --- |
-| `moment.fromHijri` | `(hy, hm, hd, options?) => Moment` | Create a moment from a Hijri date. Throws if the date is invalid or out of range. |
-
-### Options
-
-```typescript
-interface ConversionOptions {
-  calendar?: string; // 'uaq' (default) | 'fcna'
-}
-```
-
-## Calendar Systems
-
-| ID | Name | Description |
-| --- | --- | --- |
-| `uaq` | Umm al-Qura | Official calendar of Saudi Arabia. Tabular, covers AH 1318-1500 (1900-2076 CE). Default. |
-| `fcna` | FCNA/ISNA | Fiqh Council of North America calculated calendar. |
-
-Pass the calendar ID via `options`:
-
-```javascript
-m.toHijri({ calendar: 'fcna' });
-moment.fromHijri(1444, 9, 1, { calendar: 'fcna' });
-```
-
-## Format Tokens
-
-`formatHijri()` recognises the following tokens. All other tokens are passed through to `moment.format()`, so you can mix Hijri and Gregorian tokens freely.
-
-| Token | Example | Description |
-| --- | --- | --- |
-| `iYYYY` | `1444` | Hijri year, 4 digits |
-| `iYY` | `44` | Hijri year, 2 digits |
-| `iMMMM` | `Ramadan` | Month long name |
-| `iMMM` | `Ramadan` | Month medium name |
-| `iMM` | `09` | Month, zero-padded |
-| `iM` | `9` | Month, no padding |
-| `iDD` | `01` | Day, zero-padded |
-| `iD` | `1` | Day, no padding |
-| `iEEEE` | `Yawm al-Khamis` | Weekday long name |
-| `iEEE` | `Kham` | Weekday short name |
-| `iE` | `5` | Weekday numeric (1=Sun, 7=Sat) |
-| `ioooo` | `AH` | Era, long |
-| `iooo` | `AH` | Era, short |
-
-### Mixed format example
-
-```javascript
-m.formatHijri('iD iMMMM iYYYY [CE:] MMMM YYYY');
-// => '1 Ramadan 1444 CE: March 2023'
-```
-
-Bracket escaping (`[...]`) is handled by moment's own formatter for the Gregorian portion.
-
-## TypeScript
-
-The plugin augments `moment.Moment` and `moment.MomentStatic` via module declaration merging, so type safety applies after the plugin is installed. No extra imports are needed for the types.
-
-```typescript
-import moment from 'moment';
-import installHijri from 'moment-hijri-plus';
-import type { HijriDate, ConversionOptions } from 'moment-hijri-plus';
-
-installHijri(moment);
-
-const hijri: HijriDate | null = moment().toHijri();
-```
+Full API reference, format token table, and examples are in the
+[project wiki](https://github.com/acamarata/moment-hijri-plus/wiki).
 
 ## Note on Moment.js
 
-Moment.js is in maintenance mode. The authors recommend Luxon, Day.js, or date-fns for new projects. This package targets existing codebases already using Moment.js. If you are starting a new project, [dayjs-hijri-plus](https://github.com/acamarata/dayjs-hijri-plus) is a compatible alternative that works with Day.js.
-
-## Architecture
-
-A thin plugin wrapper over [hijri-core](https://github.com/acamarata/hijri-core). The plugin augments the Moment.js prototype with Hijri methods, each delegating to the registered calendar engine. Zero global state.
-
-For more detail see the [Architecture wiki page](https://github.com/acamarata/moment-hijri-plus/wiki/Architecture).
-
-## Documentation
-
-Full API reference, architecture notes, and calendar algorithm details are in the [project wiki](https://github.com/acamarata/moment-hijri-plus/wiki).
+Moment.js is in maintenance mode. For new projects,
+[dayjs-hijri-plus](https://github.com/acamarata/dayjs-hijri-plus) offers the same Hijri
+support on Day.js. This package targets existing codebases already using Moment.js.
 
 ## Related
 
-- [hijri-core](https://github.com/acamarata/hijri-core): zero-dependency Hijri calendar engine used by this plugin
-- [luxon-hijri](https://github.com/acamarata/luxon-hijri): same Hijri support for Luxon
+- [hijri-core](https://github.com/acamarata/hijri-core): Hijri calendar engine used internally
+- [dayjs-hijri-plus](https://github.com/acamarata/dayjs-hijri-plus): same API for Day.js
+- [luxon-hijri](https://github.com/acamarata/luxon-hijri): same API for Luxon
 - [pray-calc](https://github.com/acamarata/pray-calc): Islamic prayer time calculation
-
-## Compatibility
-
-- Node.js 20, 22, 24
-- Moment.js 2.x (peer dependency)
-- ESM and CJS builds included
-- TypeScript definitions bundled
-
-## Acknowledgments
-
-Calendar data and algorithms provided by [hijri-core](https://github.com/acamarata/hijri-core). The Umm al-Qura table is derived from data published by the King Abdulaziz City for Science and Technology (KACST). FCNA new moon calculations follow Jean Meeus, "Astronomical Algorithms," 2nd ed., Chapter 49.
 
 ## License
 

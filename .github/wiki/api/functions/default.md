@@ -8,7 +8,7 @@
 
 > **default**(`momentInstance`): `void`
 
-Defined in: [src/index.ts:150](https://github.com/acamarata/moment-hijri-plus/blob/50b666503568cb2ef81d0a7fc2aeefa6cb395aa5/src/index.ts#L150)
+Defined in: [src/index.ts:150](https://github.com/acamarata/moment-hijri-plus/blob/b96b21a86195492a30c50860eaa4dcadad9946ab/src/index.ts#L150)
 
 Install the Hijri plugin into the provided Moment.js instance.
 

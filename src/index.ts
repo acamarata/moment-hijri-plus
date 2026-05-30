@@ -7,8 +7,19 @@ declare module 'moment' {
   interface MomentStatic {
     /**
      * Construct a moment from a Hijri date.
-     * Throws if the date is invalid or outside the supported range.
-     * Call installHijri(moment) before use.
+     *
+     * Delegates to hijri-core's `toGregorian()` to resolve the Gregorian equivalent,
+     * then constructs the moment from the explicit UTC year/month/day to avoid timezone
+     * drift when the Date object represents midnight UTC.
+     *
+     * @param hy - Hijri year.
+     * @param hm - Hijri month (1 = Muharram, 12 = Dhul Hijjah).
+     * @param hd - Hijri day (1-30).
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns A moment positioned at the Gregorian equivalent of the given Hijri date.
+     * @throws {Error} If the date is invalid or outside the chosen calendar's range.
+     * @example
+     * moment.fromHijri(1444, 9, 1).format('YYYY-MM-DD'); // '2023-03-23'
      */
     fromHijri(hy: number, hm: number, hd: number, options?: ConversionOptions): MomentInstance;
   }
@@ -16,29 +27,88 @@ declare module 'moment' {
   interface Moment {
     /**
      * Convert this moment to a Hijri date.
-     * Returns null if the date falls outside the supported calendar range.
+     *
+     * Passes the underlying `Date` to hijri-core's `toHijri()`. The calendar engine
+     * performs a table lookup (UAQ) or astronomical calculation (FCNA).
+     *
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns A `HijriDate` object `{ hy, hm, hd }`, or `null` if the date is outside
+     *   the supported range (UAQ covers approximately CE 1900-2076).
+     * @example
+     * moment(new Date(2023, 2, 23)).toHijri();
+     * // => { hy: 1444, hm: 9, hd: 1 }
      */
     toHijri(options?: ConversionOptions): HijriDate | null;
 
-    /** Return the Hijri year, or null if out of range. */
+    /**
+     * Return the Hijri year.
+     *
+     * Convenience wrapper around `toHijri()`. Use `toHijri()` when you need all three
+     * fields to avoid redundant calendar lookups.
+     *
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns The Hijri year, or `null` if the date is outside the calendar range.
+     * @example
+     * moment(new Date(2023, 2, 23)).hijriYear(); // => 1444
+     */
     hijriYear(options?: ConversionOptions): number | null;
 
-    /** Return the Hijri month (1-12), or null if out of range. */
+    /**
+     * Return the Hijri month (1-12).
+     *
+     * 1 = Muharram, 9 = Ramadan, 12 = Dhul Hijjah.
+     *
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns The Hijri month number, or `null` if out of range.
+     * @example
+     * moment(new Date(2023, 2, 23)).hijriMonth(); // => 9 (Ramadan)
+     */
     hijriMonth(options?: ConversionOptions): number | null;
 
-    /** Return the Hijri day, or null if out of range. */
+    /**
+     * Return the Hijri day (1-30).
+     *
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns The Hijri day number, or `null` if out of range.
+     * @example
+     * moment(new Date(2023, 2, 23)).hijriDay(); // => 1
+     */
     hijriDay(options?: ConversionOptions): number | null;
 
-    /** Return true if this moment falls within the supported Hijri range. */
+    /**
+     * Return `true` if this moment falls within the supported Hijri range.
+     *
+     * Equivalent to `moment.toHijri(opts) !== null`. Use as a guard before
+     * calling `toHijri()` on user-supplied dates that may predate CE 1900.
+     *
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns `true` if the date is within range, `false` otherwise.
+     * @example
+     * moment(new Date(2023, 2, 23)).isValidHijri(); // => true
+     * moment(new Date(1800, 0, 1)).isValidHijri();  // => false
+     */
     isValidHijri(options?: ConversionOptions): boolean;
 
     /**
      * Format this moment using Hijri-aware format tokens.
      *
-     * Hijri tokens: iYYYY iYY iMMMM iMMM iMM iM iDD iD iEEEE iEEE iE ioooo iooo
-     * All other tokens are passed through to moment's own format().
+     * Hijri tokens (prefix `i`) are resolved to their Arabic calendar equivalents
+     * via a single regex pass. The residual format string is passed to `moment.format()`
+     * so all standard Gregorian tokens resolve normally. This allows mixing Hijri and
+     * Gregorian tokens in a single format string.
      *
-     * Returns an empty string if the date is outside the Hijri range.
+     * Supported Hijri tokens: `iYYYY`, `iYY`, `iMMMM`, `iMMM`, `iMM`, `iM`,
+     * `iDD`, `iD`, `iEEEE`, `iEEE`, `iE`, `ioooo`, `iooo`.
+     *
+     * @param formatStr - Format string. Hijri tokens and Moment.js tokens may be mixed freely.
+     * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
+     * @returns The formatted string, or `''` if the date is outside the Hijri range.
+     * @example
+     * moment(new Date(2023, 2, 23)).formatHijri('iD iMMMM iYYYY AH');
+     * // => '1 Ramadan 1444 AH'
+     *
+     * moment(new Date(2023, 2, 23)).formatHijri('iD iMMMM iYYYY [CE:] MMMM D, YYYY');
+     * // => '1 Ramadan 1444 CE: March 23, 2023'
      */
     formatHijri(formatStr: string, options?: ConversionOptions): string;
   }
@@ -57,12 +127,25 @@ function escapeLiteral(value: string): string {
 }
 
 /**
- * Install the Hijri plugin into the provided moment instance.
+ * Install the Hijri plugin into the provided Moment.js instance.
  *
+ * Mutates `momentInstance.fn` to add instance methods (`toHijri`, `hijriYear`,
+ * `hijriMonth`, `hijriDay`, `isValidHijri`, `formatHijri`) and attaches
+ * `momentInstance.fromHijri` as a static factory. Call once at application startup.
+ *
+ * The call is idempotent: calling it a second time overwrites the methods with
+ * identical implementations.
+ *
+ * @param momentInstance - The Moment.js constructor to augment. Pass your imported
+ *   `moment` directly. Works with any moment instance, including locale-scoped ones.
  * @example
  * import moment from 'moment';
  * import installHijri from 'moment-hijri-plus';
+ *
  * installHijri(moment);
+ *
+ * moment(new Date(2023, 2, 23)).toHijri();
+ * // => { hy: 1444, hm: 9, hd: 1 }
  */
 function install(momentInstance: typeof moment): void {
   momentInstance.fn.toHijri = function (opts?: ConversionOptions): HijriDate | null {

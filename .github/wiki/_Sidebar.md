@@ -10,6 +10,12 @@
 
 **Reference**
 - [API Reference](API-Reference)
+- [installHijri](api/installHijri)
+- [toHijri](api/toHijri)
+- [fromHijri](api/fromHijri)
+- [formatHijri](api/formatHijri)
+- [hijriYear / hijriMonth / hijriDay](api/hijriYear-hijriMonth-hijriDay)
+- [isValidHijri](api/isValidHijri)
 - [Architecture](Architecture)
 - [Benchmarks](benchmarks/index)
 
