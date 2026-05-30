@@ -1,6 +1,6 @@
 {
   "name": "moment-hijri-plus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Moment.js plugin for Hijri calendar conversion and formatting. Supports Umm al-Qura and FCNA calendars via hijri-core.",
   "author": "Aric Camarata",
   "license": "MIT",

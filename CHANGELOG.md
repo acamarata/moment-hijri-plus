@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-05-30
+
+### Changed
+- Trim README to concise quick-start format (E6 P1 polish)
+- Expand TSDoc on all exported symbols with full @param/@returns/@example blocks
+- Add docs, postbuild, and improved coverage scripts
+- Adopt shared config packages (@acamarata/eslint-config, tsconfig, prettier-config)
+
 ## [1.0.1] - 2026-05-28
 
 ### Changed
