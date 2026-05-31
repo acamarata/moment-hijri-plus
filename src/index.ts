@@ -1,9 +1,9 @@
-import moment from 'moment';
-import type { Moment as MomentInstance } from 'moment';
-import { toHijri, toGregorian, hmLong, hmMedium, hwLong, hwShort, hwNumeric } from 'hijri-core';
-import type { HijriDate, ConversionOptions } from './types';
+import moment from "moment";
+import type { Moment as MomentInstance } from "moment";
+import { toHijri, toGregorian, hmLong, hmMedium, hwLong, hwShort, hwNumeric } from "hijri-core";
+import type { HijriDate, ConversionOptions } from "./types";
 
-declare module 'moment' {
+declare module "moment" {
   interface MomentStatic {
     /**
      * Construct a moment from a Hijri date.
@@ -123,7 +123,7 @@ const HIJRI_TOKEN_RE = /iYYYY|iYY|iMMMM|iMMM|iMM|iM|iDD|iD|iEEEE|iEEE|iE|ioooo|i
  * Wraps the value in square brackets, escaping any ] characters within.
  */
 function escapeLiteral(value: string): string {
-  return '[' + value.replace(/]/g, '][]') + ']';
+  return "[" + value.replace(/]/g, "][]") + "]";
 }
 
 /**
@@ -170,7 +170,7 @@ function install(momentInstance: typeof moment): void {
 
   momentInstance.fn.formatHijri = function (formatStr: string, opts?: ConversionOptions): string {
     const hijri = this.toHijri(opts);
-    if (!hijri) return '';
+    if (!hijri) return "";
     const dow = this.day();
     // Replace Hijri tokens with escaped literals, then pass the residual string
     // to moment.format() so all standard tokens (YYYY, MMM, etc.) resolve correctly.
@@ -178,39 +178,39 @@ function install(momentInstance: typeof moment): void {
     // interpreted by moment as format tokens (R, a, m, etc.).
     const residual = formatStr.replace(HIJRI_TOKEN_RE, (token: string): string => {
       switch (token) {
-        case 'iYYYY':
-          return escapeLiteral(String(hijri.hy).padStart(4, '0'));
-        case 'iYY':
-          return escapeLiteral(String(hijri.hy % 100).padStart(2, '0'));
-        case 'iMMMM':
+        case "iYYYY":
+          return escapeLiteral(String(hijri.hy).padStart(4, "0"));
+        case "iYY":
+          return escapeLiteral(String(hijri.hy % 100).padStart(2, "0"));
+        case "iMMMM":
           // Non-null: hijri.hm is 1-12; hm-1 is always 0-11, within hmLong bounds.
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return escapeLiteral(hmLong[hijri.hm - 1]!);
-        case 'iMMM':
+        case "iMMM":
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return escapeLiteral(hmMedium[hijri.hm - 1]!);
-        case 'iMM':
-          return escapeLiteral(String(hijri.hm).padStart(2, '0'));
-        case 'iM':
+        case "iMM":
+          return escapeLiteral(String(hijri.hm).padStart(2, "0"));
+        case "iM":
           return escapeLiteral(String(hijri.hm));
-        case 'iDD':
-          return escapeLiteral(String(hijri.hd).padStart(2, '0'));
-        case 'iD':
+        case "iDD":
+          return escapeLiteral(String(hijri.hd).padStart(2, "0"));
+        case "iD":
           return escapeLiteral(String(hijri.hd));
-        case 'iEEEE':
+        case "iEEEE":
           // Non-null: dow is always 0-6 (day of week), within hwLong bounds.
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return escapeLiteral(hwLong[dow]!);
-        case 'iEEE':
+        case "iEEE":
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return escapeLiteral(hwShort[dow]!);
-        case 'iE':
+        case "iE":
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return escapeLiteral(String(hwNumeric[dow]!));
         // Era tokens: both iooo and ioooo map to the common abbreviation.
-        case 'iooo':
-        case 'ioooo':
-          return escapeLiteral('AH');
+        case "iooo":
+        case "ioooo":
+          return escapeLiteral("AH");
         default:
           return token;
       }
@@ -221,7 +221,7 @@ function install(momentInstance: typeof moment): void {
   // Attach fromHijri as a property on the constructor. We use bracket notation and a type
   // assertion because MomentStatic augmentation produces a DTS visibility error with some
   // TypeScript configurations; attaching at runtime is equivalent and safe.
-  (momentInstance as unknown as Record<string, unknown>)['fromHijri'] = function (
+  (momentInstance as unknown as Record<string, unknown>)["fromHijri"] = function (
     hy: number,
     hm: number,
     hd: number,
@@ -243,5 +243,5 @@ function install(momentInstance: typeof moment): void {
 }
 
 export default install;
-export type { HijriDate, ConversionOptions, CalendarEngine } from 'hijri-core';
-export { registerCalendar, getCalendar, listCalendars } from 'hijri-core';
+export type { HijriDate, ConversionOptions, CalendarEngine } from "hijri-core";
+export { registerCalendar, getCalendar, listCalendars } from "hijri-core";
