@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.3] - 2026-06-10
 
 ### Fixed
 - `.toHijri()` now converts the calendar date the moment instance displays (year/month/day
   components, respecting `.utc()` mode) rather than passing the raw instant to hijri-core.
   This eliminates wrong-Hijri-day results around UTC-midnight for hosts east or west of UTC.
-  Lock-step with the unreleased hijri-core fix on `fix/utc-day-boundary`.
+  Requires hijri-core 1.0.3.
 
 ## [1.0.2] - 2026-05-30
 
