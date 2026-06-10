@@ -50,6 +50,15 @@ Pass `{ calendar: 'fcna' }` to switch from the default Umm al-Qura calendar to F
 Full API reference, format token table, and examples are in the
 [project wiki](https://github.com/acamarata/moment-hijri-plus/wiki).
 
+## Day boundaries and time zones
+
+Conversions use the calendar date the moment instance displays, not the underlying UTC
+instant. A `moment("2025-03-01")` parsed in any local timezone returns the Hijri date
+for March 1st, 2025. A moment created with `.utc()` uses its UTC components.
+
+Religious day-start at sunset is outside the scope of this package; it depends on
+location and madhab, and must be handled at the application layer.
+
 ## Note on Moment.js
 
 Moment.js is in maintenance mode. For new projects,

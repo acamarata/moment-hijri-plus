@@ -28,8 +28,13 @@ declare module "moment" {
     /**
      * Convert this moment to a Hijri date.
      *
-     * Passes the underlying `Date` to hijri-core's `toHijri()`. The calendar engine
-     * performs a table lookup (UAQ) or astronomical calculation (FCNA).
+     * Converts the calendar date this moment instance displays (year/month/day) to a
+     * Hijri date via hijri-core's `toHijri()`. The conversion is independent of the
+     * host machine's timezone: a moment in UTC mode uses its UTC components, and a
+     * moment in local mode uses its local components. The raw instant (milliseconds
+     * since epoch) is never passed directly to the calendar engine.
+     *
+     * The calendar engine performs a table lookup (UAQ) or astronomical calculation (FCNA).
      *
      * @param options - Calendar selection. Default: `{ calendar: 'uaq' }`.
      * @returns A `HijriDate` object `{ hy, hm, hd }`, or `null` if the date is outside
@@ -149,7 +154,11 @@ function escapeLiteral(value: string): string {
  */
 function install(momentInstance: typeof moment): void {
   momentInstance.fn.toHijri = function (opts?: ConversionOptions): HijriDate | null {
-    return toHijri(this.toDate(), opts);
+    // Use the calendar date this instance displays rather than the raw instant.
+    // this.year()/.month()/.date() respect utc mode automatically, so a moment
+    // created with .utc() uses UTC components and a local moment uses local components.
+    // moment.month() is 0-based, matching Date.UTC's month parameter exactly.
+    return toHijri(new Date(Date.UTC(this.year(), this.month(), this.date())), opts);
   };
 
   momentInstance.fn.hijriYear = function (opts?: ConversionOptions): number | null {
@@ -236,8 +245,8 @@ function install(momentInstance: typeof moment): void {
     if (!greg) {
       throw new Error(`Invalid or out-of-range Hijri date: ${hy}/${hm}/${hd}`);
     }
-    // Construct from explicit year/month/day to avoid UTC-to-local timezone
-    // shift when the Date object represents midnight UTC.
+    // Construct from explicit year/month/day components so the moment displays
+    // the correct calendar date regardless of the host timezone offset.
     return momentInstance([greg.getUTCFullYear(), greg.getUTCMonth(), greg.getUTCDate()]);
   };
 }

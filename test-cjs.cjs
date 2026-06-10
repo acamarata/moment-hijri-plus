@@ -61,3 +61,22 @@ describe('CJS: isValidHijri', () => {
     assert.equal(moment(new Date(2023, 2, 23, 12)).isValidHijri(), true);
   });
 });
+
+describe('CJS: UTC-day boundary (regression)', () => {
+  it('fromHijri → toHijri round-trip: 1446/9/1', () => {
+    const m = moment.fromHijri(1446, 9, 1);
+    const h = m.toHijri();
+    assert.notEqual(h, null);
+    assert.equal(h.hy, 1446);
+    assert.equal(h.hm, 9);
+    assert.equal(h.hd, 1);
+  });
+
+  it('moment("2025-03-01") toHijri => 1446/9/1 (timezone-invariant)', () => {
+    const h = moment('2025-03-01').toHijri();
+    assert.notEqual(h, null);
+    assert.equal(h.hy, 1446);
+    assert.equal(h.hm, 9);
+    assert.equal(h.hd, 1);
+  });
+});

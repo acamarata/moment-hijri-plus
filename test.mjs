@@ -110,3 +110,26 @@ describe('FCNA calendar', () => {
     assert.equal(typeof h.hd, 'number');
   });
 });
+
+describe('UTC-day boundary (regression)', () => {
+  it('fromHijri → toHijri round-trip: 1446/9/1', () => {
+    // Construct from Hijri, convert back — must be exact regardless of host TZ.
+    const m = moment.fromHijri(1446, 9, 1);
+    const h = m.toHijri();
+    assert.notEqual(h, null);
+    assert.equal(h.hy, 1446);
+    assert.equal(h.hm, 9);
+    assert.equal(h.hd, 1);
+  });
+
+  it('moment("2025-03-01") toHijri => 1446/9/1 (timezone-invariant)', () => {
+    // moment parses date-only ISO strings as LOCAL midnight.
+    // toHijri must convert the displayed calendar date (2025-03-01), not the raw
+    // instant, so the result is the same regardless of the host timezone offset.
+    const h = moment('2025-03-01').toHijri();
+    assert.notEqual(h, null);
+    assert.equal(h.hy, 1446);
+    assert.equal(h.hm, 9);
+    assert.equal(h.hd, 1);
+  });
+});
