@@ -75,3 +75,7 @@ support on Day.js. This package targets existing codebases already using Moment.
 ## License
 
 MIT. Copyright (c) 2026 Aric Camarata.
+
+## Telemetry
+
+This package supports optional, anonymous usage telemetry via [`@acamarata/telemetry`](https://github.com/acamarata/telemetry). It is **off by default**. See [TELEMETRY.md](https://github.com/acamarata/telemetry/blob/main/TELEMETRY.md) for what is collected and how to enable or disable it.
